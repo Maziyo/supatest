@@ -8,20 +8,39 @@ const supabase = createClient(
 );
 
 export default async function handler(req, res) {
-  if (req.method === 'POST') {
-    const { text } = req.body;
-
-    // Supabase에 데이터 삽입
-    const { data, error } = await supabase
-      .from('texts')
-      .insert([{ text }]);
-
-    if (error) {
-      return res.status(500).json({ error: '서버 오류' });
+    try {
+      if (req.method === 'POST') {
+        const { text } = req.body;
+  
+        // Supabase에 데이터 삽입
+        const { data, error } = await supabase
+          .from('texts')
+          .insert([{ text }]);
+  
+        if (error) {
+          return res.status(500).json({ error: '서버 오류' });
+        }
+  
+        return res.status(200).json({ message: '데이터 저장 성공' });
+      } 
+  
+      if (req.method === 'GET') {
+        const { data, error } = await supabase
+          .from('texts')
+          .select('*');
+  
+        if (error) {
+          return res.status(500).json({ error: '데이터 조회 실패' });
+        }
+  
+        return res.status(200).json(data);
+      }
+  
+      return res.status(405).json({ error: '지원되지 않는 메서드' });
+    } catch (error) {
+      console.error('Server error: ', error);
+      return res.status(500).json({ error: '서버에서 예상치 못한 오류가 발생했습니다.' });
     }
-
-    return res.status(200).json({ message: '데이터 저장 성공' });
   }
-
-  return res.status(405).json({ error: '지원되지 않는 메서드' });
-}
+  
+  
