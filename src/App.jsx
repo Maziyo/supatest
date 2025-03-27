@@ -9,7 +9,7 @@ function App() {
     e.preventDefault();
   
     try {
-      const response = await fetch("/api/texts", {
+      const response = await fetch("https://supatest-jade.vercel.app/api/texts", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
